@@ -167,7 +167,7 @@
     }
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSMutableSet *directoriesModificationDates = [[NSMutableSet alloc] init];
+//    NSMutableSet *directoriesModificationDates = [[NSMutableSet alloc] init];
     
     BOOL success = YES;
     BOOL canceled = NO;
@@ -290,8 +290,8 @@
                 NSLog(@"ZipArchive Error: %@", err.localizedDescription);
             }
             
-            if(!fileIsSymbolicLink)
-                [directoriesModificationDates addObject: @{@"path": fullPath, @"modDate": modDate}];
+//            if(!fileIsSymbolicLink)
+//                [directoriesModificationDates addObject: @{@"path": fullPath, @"modDate": modDate}];
             
             if ([fileManager fileExistsAtPath:fullPath] && !isDirectory && !overwrite) {
                 unzCloseCurrentFile(zip);
@@ -415,18 +415,19 @@
     // The process of decompressing the .zip archive causes the modification times on the folders
     // to be set to the present time. So, when we are done, they need to be explicitly set.
     // set the modification date on all of the directories.
-    NSError *err = nil;
-    
-    for (NSDictionary *dictionary in directoriesModificationDates) {
-        if (![[NSFileManager defaultManager] setAttributes:@{NSFileModificationDate: dictionary[@"modDate"]}
-                                              ofItemAtPath:dictionary[@"path"]
-                                                     error:&err]) {
-            NSLog(@"[ZipArchive] Set attributes failed for directory: %@.", dictionary[@"path"]);
-        }
-        if (err) {
-            NSLog(@"[ZipArchive] Error setting directory file modification date attribute: %@", err.localizedDescription);
-        }
-    }
+    // TC MOD: DON'T NEED THIS (files are usually deleted by the time we get here)
+//    NSError *err = nil;
+//    
+//    for (NSDictionary *dictionary in directoriesModificationDates) {
+//        if (![[NSFileManager defaultManager] setAttributes:@{NSFileModificationDate: dictionary[@"modDate"]}
+//                                              ofItemAtPath:dictionary[@"path"]
+//                                                     error:&err]) {
+//            NSLog(@"[ZipArchive] Set attributes failed for directory: %@.", dictionary[@"path"]);
+//        }
+//        if (err) {
+//            NSLog(@"[ZipArchive] Error setting directory file modification date attribute: %@", err.localizedDescription);
+//        }
+//    }
     
     // Message Delegate
     if (success && [delegate respondsToSelector:@selector(zipArchiveDidUnzipArchiveAtPath:zipInformation:unzippedPath:)]) {
