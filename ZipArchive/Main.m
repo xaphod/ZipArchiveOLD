@@ -387,19 +387,23 @@
             ret = unzGoToNextFile( zip );
             
             // Message Delegate
-            if ([delegate respondsToSelector:@selector(zipArchiveDidUnzipFileAtIndex:totalFiles:archivePath:fileInformation:)]) {
-                [delegate zipArchiveDidUnzipFileAtIndex:currentFileNumber
-                                             totalFiles:(NSInteger)globalInfo.number_entry
-                                            archivePath:path
-                                        fileInformation:fileInfo];
+            // TC MOD: ONLY message if not a dir and not a symlink. Plus, include the full filepath
+            if( !isDirectory && !fileIsSymbolicLink ) {
                 
-            } else if ([delegate respondsToSelector: @selector(zipArchiveDidUnzipFileAtIndex:totalFiles:archivePath:unzippedFilePath:)]) {
-                [delegate zipArchiveDidUnzipFileAtIndex:currentFileNumber
-                                             totalFiles:(NSInteger)globalInfo.number_entry
-                                            archivePath:path
-                                       unzippedFilePath:fullPath];
+                if ([delegate respondsToSelector:@selector(zipArchiveDidUnzipFileAtIndex:totalFiles:archivePath:fileInformation:unzippedFilePath:)]) {
+                    [delegate zipArchiveDidUnzipFileAtIndex:currentFileNumber
+                                                 totalFiles:(NSInteger)globalInfo.number_entry
+                                                archivePath:path
+                                            fileInformation:fileInfo
+                                           unzippedFilePath:fullPath];
+                    
+                } else if ([delegate respondsToSelector: @selector(zipArchiveDidUnzipFileAtIndex:totalFiles:archivePath:unzippedFilePath:)]) {
+                    [delegate zipArchiveDidUnzipFileAtIndex:currentFileNumber
+                                                 totalFiles:(NSInteger)globalInfo.number_entry
+                                                archivePath:path
+                                           unzippedFilePath:fullPath];
+                }
             }
-            
             currentFileNumber++;
             
             if (progressHandler) {

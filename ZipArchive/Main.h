@@ -92,7 +92,8 @@
 - (void)zipArchiveDidUnzipFileAtIndex:(NSInteger)fileIndex
                            totalFiles:(NSInteger)totalFiles
                           archivePath:(NSString *)archivePath
-                      fileInformation:(unz_file_info)fileInformation;
+                      fileInformation:(unz_file_info)fileInformation
+                     unzippedFilePath:(NSString *)unzippedFilePath;
 
 - (void)zipArchiveDidUnzipFileAtIndex:(NSInteger)fileIndex
                            totalFiles:(NSInteger)totalFiles
