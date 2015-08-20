@@ -28,49 +28,12 @@
 }
 
 #pragma mark - Unzipping
-+ (BOOL)unzipFileAtPath:(NSString *)path
-          toDestination:(NSString *)destination {
-    
-    return [self unzipFileAtPath:path
-                   toDestination:destination
-                        delegate:nil];
-}
 
 + (BOOL)unzipFileAtPath:(NSString *)path
           toDestination:(NSString *)destination
               overwrite:(BOOL)overwrite
                password:(NSString *)password
-                  error:(NSError *)error {
-    
-    return [self unzipFileAtPath:path
-                   toDestination:destination
-                       overwrite:overwrite
-                        password:password
-                           error:error
-                        delegate:nil
-                 progressHandler:nil
-               completionHandler:nil];
-}
-
-+ (BOOL)unzipFileAtPath:(NSString *)path
-          toDestination:(NSString *)destination
-               delegate:(id<ZipArchiveDelegate>)delegate {
-    
-    return [self unzipFileAtPath:path
-                   toDestination:destination
-                       overwrite:YES
-                        password:nil
-                           error:nil
-                        delegate:delegate
-                 progressHandler:nil
-               completionHandler:nil];
-}
-
-+ (BOOL)unzipFileAtPath:(NSString *)path
-          toDestination:(NSString *)destination
-              overwrite:(BOOL)overwrite
-               password:(NSString *)password
-                  error:(NSError *)error
+                  error:(NSError **)error
                delegate:(id<ZipArchiveDelegate>)delegate {
     
     return [self unzipFileAtPath:path
@@ -119,7 +82,7 @@
           toDestination:(NSString *)destination
               overwrite:(BOOL)overwrite
                password:(NSString *)password
-                  error:(NSError *)error
+                  error:(NSError **)error
                delegate:(id<ZipArchiveDelegate>)delegate
         progressHandler:(void (^)(NSString *entry, unz_file_info zipInfo, long entryNumber, long total))progressHandler
       completionHandler:(void (^)(NSString *path, BOOL succeeded, NSError *error))completionHandler {
@@ -132,7 +95,7 @@
         NSError *err = [NSError errorWithDomain:@"ZipArchiveErrorDomain" code:-1 userInfo:userInformation];
         
         if (error) {
-            error = err;
+            *error = err;
         }
         
         if (completionHandler) {
@@ -156,7 +119,7 @@
         NSError *err = [NSError errorWithDomain:@"ZipArchiveErrorDomain" code:-2 userInfo:userInformation];
         
         if (error) {
-            error = err;
+            *error = err;
         }
         
         if (completionHandler) {
